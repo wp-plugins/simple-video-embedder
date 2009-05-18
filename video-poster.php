@@ -89,7 +89,7 @@ function p75_videoPosting()
 	// Video preview.
 	if ( $videoURL )
 	{
-		echo '<div style="margin-top:10px;">' . __("Video Preview") . ': (' . __("Actual Size") . '")<br /><div id="video_preview" style="padding: 3px; border: 1px solid #CCC;float: left; margin-top: 5px;">';
+		echo '<div style="margin-top:10px;">' . __("Video Preview") . ': (' . __("Actual Size") . ')<br /><div id="video_preview" style="padding: 3px; border: 1px solid #CCC;float: left; margin-top: 5px;">';
 		$videoEmbedder = p75VideoEmbedder::getInstance();
 		$videoEmbedder->setWidth( $videoWidth ? $videoWidth : get_option('p75_default_player_width') );
 		$videoEmbedder->setHeight( $videoHeight ? $videoHeight : get_option('p75_default_player_height') );
@@ -154,12 +154,20 @@ function p75_saveVideo( $postID ) {
 		
 		// Save width and height.
 		if ( is_numeric($_POST['p75-video-width']) )
+		{
 			if( !update_post_meta($postID, '_videowidth', $_POST['p75-video-width']) )
 				add_post_meta($postID, '_videowidth', $_POST['p75-video-width']);
+		}
+		else if ( empty($_POST['p75-video-width']) )
+			delete_post_meta($postID, '_videowidth');
    
 		if ( is_numeric($_POST['p75-video-height']) )
+		{
 			if( !update_post_meta($postID, '_videoheight', $_POST['p75-video-height']) )
 				add_post_meta($postID, '_videoheight', $_POST['p75-video-height']);
+		}
+		else if ( empty($_POST['p75-video-height']) )
+			delete_post_meta($postID, '_videoheight');
 	}
 
 }
