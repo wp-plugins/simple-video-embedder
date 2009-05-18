@@ -24,8 +24,8 @@ function p75_sveActivate()
 	global $wpdb;
 	
 	// Set default player width and height if not present.
-	update_post_meta('p75_default_player_width', 400);
-	update_post_meta('p75_default_player_height', 300);
+	add_option('p75_default_player_width', '400');
+	add_option('p75_default_player_height', '300');
 	
 	// Update legacy meta fields to the new ones.
 	$wpdb->query("UPDATE " . $wpdb->prefix . "postmeta SET meta_key='_videoembed_manual' WHERE meta_key='videoembed'");
@@ -47,7 +47,7 @@ function p75_videoAdminInit()
 		add_meta_box("p75-video-posting", "Post Video Options", "p75_videoPosting", "post", "advanced");
 	}
 	
-	add_options_page('Simple Video Embedder Options', 'Video Options', 8, 'videooptions', 'p75_optionsAdmin');
+	add_options_page('Simple Video Embedder Options', 'Video Options', 8, 'videooptions', 'p75_videoOptionsAdmin');
 }
 
 /**
@@ -153,13 +153,13 @@ function p75_saveVideo( $postID ) {
 		delete_post_meta($postID, '_videoembed_manual');
 		
 		// Save width and height.
-		$videoWidth = is_numeric($_POST['p75-video-width']) ? $_POST['p75-video-width'] : "";
-		if( !update_post_meta($postID, '_videowidth', $videoWidth) )
-			add_post_meta($postID, '_videowidth', $videoWidth);
+		if ( is_numeric($_POST['p75-video-width']) )
+			if( !update_post_meta($postID, '_videowidth', $_POST['p75-video-width']) )
+				add_post_meta($postID, '_videowidth', $_POST['p75-video-width']);
    
-		$videoHeight = is_numeric($_POST['p75-video-height']) ? $_POST['p75-video-height'] : "";
-		if( !update_post_meta($postID, '_videoheight', $videoHeight) )
-			add_post_meta($postID, '_videoheight', $videoHeight);
+		if ( is_numeric($_POST['p75-video-height']) )
+			if( !update_post_meta($postID, '_videoheight', $_POST['p75-video-height']) )
+				add_post_meta($postID, '_videoheight', $_POST['p75-video-height']);
 	}
 
 }
@@ -190,7 +190,7 @@ function p75GetVideo($postID)
 	return $videoEmbedder->getEmbedCode($videoURL);
 }
 
-function p75_optionsAdmin()
+function p75_videoOptionsAdmin()
 {
 ?>
 	<div class="wrap">
@@ -201,20 +201,24 @@ function p75_optionsAdmin()
 	
 			<table class="form-table">
 				<tr valign="top">
-					<th scope="row"><label for="p75_default_player_width"><?php _e("Default player width"); ?>:</label></th>
+					<th style="white-space:nowrap;" scope="row"><label for="p75_default_player_width"><?php _e("Default player width"); ?>:</label></th>
 					<td><input id="p75_default_player_width" type="text" name="p75_default_player_width" value="<?php echo get_option('p75_default_player_width'); ?>" /></td>
+					<td style="width:100%;">The default width of the video player if not set.</td>
 				</tr>
 				<tr valign="top">
-					<th scope="row"><label for="p75_default_player_height"><?php _e("Default player height"); ?>:</label></th>
+					<th style="white-space:nowrap;" scope="row"><label for="p75_default_player_height"><?php _e("Default player height"); ?>:</label></th>
 					<td><input id="p75_default_player_height" type="text" name="p75_default_player_height" value="<?php echo get_option('p75_default_player_height'); ?>" /></td>
+					<td>The default height of the video player if not set.</td>
 				</tr>
 				<tr valign="top">
-					<th scope="row"><label for="p75_jw_files"><?php _e("JW Player files location"); ?></label>:</th>
+					<th style="white-space:nowrap;" scope="row"><label for="p75_jw_files"><?php _e("JW Player files location"); ?></label>:</th>
 					<td><input id="p75_jw_files" type="text" name="p75_jw_files" value="<?php echo get_option('p75_jw_files'); ?>" /></td>
+					<td>The location of the JW player files relative to your WordPress installation.</td>
 				</tr>
 				<tr valign="top">
-					<th scope="row"><a href="http://developer.longtailvideo.com/trac/wiki/FlashVars" title="<?php _e("What are flashvars?"); ?>" target="_blank"><?php _e("JW Player flashvars"); ?></a>:</th>
+					<th style="white-space:nowrap;" scope="row"><a href="http://developer.longtailvideo.com/trac/wiki/FlashVars" title="<?php _e("What are flashvars?"); ?>" target="_blank"><?php _e("JW Player flashvars"); ?></a>:</th>
 					<td><input type="text" name="p75_jw_flashvars" value="<?php echo get_option('p75_jw_flashvars'); ?>" /></td>
+					<td>Extra parameters for JW player. For experienced users.</td>
 				</tr>
 			</table>
 	

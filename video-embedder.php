@@ -75,12 +75,24 @@ class p75VideoEmbedder
 	 *
 	 * @param $url The video URL.
 	 */
-	function getEmbedCode($url) {
-		foreach ( $this->videoPlayers as $id=>$player ) {
-			if ( $player['oracle']($url) ) {
-				return $player['player']($url, $this->width, $this->height);
-			}
+	function getEmbedCode($url)
+	{
+		foreach ( $this->videoPlayers as $id=>$player )
+		{
+			if ( call_user_func($player['oracle'], $url) )
+				return call_user_func($player['player'], $url, $this->width, $this->height);
 		}
+	}
+	
+	function checkURL($url)
+	{
+		foreach ( $this->videoPlayers as $id=>$player )
+		{
+			if ( $player['oracle']($url) )
+				return true;
+		}
+		
+		return false;
 	}
 	
 }

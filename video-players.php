@@ -105,10 +105,14 @@
 		if ( !empty($flashvars) && substr($flashvars, 0, 1)!='&' )
 			$flashvars = '&' . $flashvars;
 		
+		$fileLoc = get_option('p75_jw_files');
+		if ( substr($fileLoc, -1)!='/' )
+			$fileLoc = $fileLoc . '/';
+		
 		return '<div id="videoContainer"><a href="http://www.macromedia.com/go/getflashplayer">Get the Flash Player</a> to see this player.</div>
-	<script type="text/javascript" src="' . get_option('p75_jw_files') . '/swfobject.js"></script>
+	<script type="text/javascript" src="' . $fileLoc . 'swfobject.js"></script>
 	<script type="text/javascript">
-		var s1 = new SWFObject("' . get_option('p75_jw_files') . '/player-viral.swf","ply","'.$width.'","'.$height.'","9","#FFFFFF");
+		var s1 = new SWFObject("' . $fileLoc . 'player-viral.swf","ply","'.$width.'","'.$height.'","9","#FFFFFF");
 		s1.addParam("allowfullscreen","true");
 		s1.addParam("allownetworking","all");
 		s1.addParam("allowscriptaccess","always");
