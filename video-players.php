@@ -29,11 +29,21 @@
 		
 		if( strstr($url, "&fmt=22") ) // Check for HD
 		{
-			return '<object width="' . $width . '" height="' . $height . '"><param value="http://www.youtube.com/v/' . $matches[1] . '&ap=%2526fmt%3D22" name="movie" /><param value="window" name="wmode" /><param value="true" name="allowFullScreen" /><embed width="' . $width . '" height="' . $height . '" wmode="window" allowfullscreen="true" type="application/x-shockwave-flash" src="http://www.youtube.com/v/' . $matches[1] . '&ap=%2526fmt%3D22"></embed></object>';
+			$res = '<object width="' . $width . '" height="' . $height . '"><param value="http://www.youtube.com/v/' . $matches[1] . '&ap=%2526fmt%3D22';
+			if ( strstr($url, "&autoplay=1") ) $res .= '&autoplay=1';
+			$res .= '" name="movie" /><param value="window" name="wmode" /><param value="true" name="allowFullScreen" /><embed width="' . $width . '" height="' . $height . '" wmode="window" allowfullscreen="true" type="application/x-shockwave-flash" src="http://www.youtube.com/v/' . $matches[1] . '&ap=%2526fmt%3D22';
+			if ( strstr($url, "&autoplay=1") ) $res .= '&autoplay=1';
+			$res .= '"></embed></object>';
+			return $res;
 		}
 		else
 		{
-			return '<object width="' . $width . '" height="' . $height . '"><param name="movie" value="http://www.youtube.com/v/' . $matches[1] . '&hl=en&fs=1"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/' . $matches[1] . '&hl=en&fs=1" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="' . $width . '" height="' . $height . '"></embed></object>';
+			$res = '<object width="' . $width . '" height="' . $height . '"><param name="movie" value="http://www.youtube.com/v/' . $matches[1] . '&hl=en&fs=1';
+			if ( strstr($url, "&autoplay=1") ) $res .= '&autoplay=1';
+			$res .= '"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/' . $matches[1] . '&hl=en&fs=1';
+			if ( strstr($url, "&autoplay=1") ) $res .= '&autoplay=1';
+			$res .= '" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="' . $width . '" height="' . $height . '"></embed></object>';
+			return $res;
 		}
 	}
 	
