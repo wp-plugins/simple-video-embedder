@@ -3,15 +3,13 @@
 Plugin Name: Simple Video Embedder
 Plugin URI: http://www.press75.com/the-simple-video-embedder-wordpress-plugin/
 Description: Easily embed video within your posts. Brought to you by <a href="http://www.press75.com" title="Press75.com">Press75.com</a>.
-Version: 1.1.1
+Version: 1.2
 Author: James Lao
 Author URI: http://jameslao.com/
 */
 
 require_once('video-embedder.php');
 require_once('video-players.php');
-
-define('P75_SVE_VERSION', "1.1");
 
 /**
  * Plugin activation. Set default player width
@@ -26,6 +24,7 @@ function p75_sveActivate()
 	// Set default player width and height if not present.
 	add_option('p75_default_player_width', '400');
 	add_option('p75_default_player_height', '300');
+	add_option('p75_sve_version', '1.2');
 	
 	// Update legacy meta fields to the new ones.
 	$wpdb->query("UPDATE " . $wpdb->prefix . "postmeta SET meta_key='_videoembed_manual' WHERE meta_key='videoembed'");
@@ -241,5 +240,16 @@ function p75_videoOptionsAdmin()
 
 <?php
 }
+
+function ident_simple_video_plugin($blogopts) {
+  $blogopts['simple_video_embedder'] =  array(
+		'desc' => __( 'Press75 Simple Video Plugin 1.0' ),
+		'readonly' => true,
+		'option' => 'simple_video_embedder'
+		);
+  return $blogopts;
+}
+ 
+add_filter('xmlrpc_blog_options', 'ident_simple_video_plugin');
 
 ?>

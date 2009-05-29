@@ -4,7 +4,7 @@ Donate link: http://jameslao.com/
 Tags: video, embed, youtube, vimeo, automatic, simple
 Requires at least: 2.6
 Tested up to: 2.7.1
-Stable tag: 1.1.1
+Stable tag: 1.2
 
 Adds a widget to the posting screen that makes posting videos a cinch.
 
@@ -23,6 +23,9 @@ Sites supported:
 *   JW media player
 
 The widget also provides a space to add custom embed code for posting videos from unsupported sites.
+
+Version 1.2 adds:
+*   XMLRPC identification
 
 Version 1.1.1 adds:
 *   Autoplay support for YouTube.
