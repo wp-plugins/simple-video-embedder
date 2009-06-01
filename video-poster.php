@@ -243,7 +243,7 @@ function p75_videoOptionsAdmin()
 
 function ident_simple_video_plugin($blogopts) {
   $blogopts['simple_video_embedder'] =  array(
-		'desc' => __( 'Press75 Simple Video Plugin 1.0' ),
+		'desc' => __( 'Press75 Simple Video Plugin 1.2' ),
 		'readonly' => true,
 		'option' => 'simple_video_embedder'
 		);
