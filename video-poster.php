@@ -11,6 +11,24 @@ Author URI: http://jameslao.com/
 require_once('video-embedder.php');
 require_once('video-players.php');
 
+if(!defined('PHP_VERSION_ID')) {
+	$version = PHP_VERSION;
+	define('PHP_VERSION_ID', ($version{0} * 10000 + $version{2} * 100 + $version{4}));
+}
+
+if ( PHP_VERSION_ID < 50000 ) {
+	function spt_php_version_error() {
+		?>
+			<div id='cafepress-upgrade' class='updated fade'>
+			<p>
+				You are currently running PHP4. You must have PHP5 to use this plugin. Please ask your host how to upgrade to PHP to version 5.
+			</p>
+			</div>
+		<?php
+	}
+	add_action('admin_notices', 'spt_php_version_error');
+}
+
 /**
  * Plugin activation. Set default player width
  * and height if not present.
