@@ -3,14 +3,16 @@ Contributors: James Lao, Jason Schuller
 Donate link: http://jameslao.com/
 Tags: video, embed, youtube, vimeo, automatic, simple
 Requires at least: 2.6
-Tested up to: 2.8
-Stable tag: 1.2
+Tested up to: 2.8.2
+Stable tag: 1.3
 
 Adds a widget to the posting screen that makes posting videos a cinch.
 
 == Description ==
 
 Easily embed video within your posts. Adds a widget to the posting screen that enables you to post videos by simply providing the URL to the video hosted on common video sharing websites.
+
+Note: This plugin requires PHP5.
 
 Sites supported:
 
@@ -23,6 +25,11 @@ Sites supported:
 *   JW media player
 
 The widget also provides a space to add custom embed code for posting videos from unsupported sites.
+
+Version 1.3 adds:
+*   Admin notice if you are using PHP4.
+*   Updated JW Player code so that the ID on the videoContainer div does not conflict if there are multiple players on the page.
+*   Added a p75HasVideo(post_id) function that checks to see if a given post has a video.
 
 Version 1.2 adds:
 *   XMLRPC identification

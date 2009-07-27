@@ -3,7 +3,7 @@
 Plugin Name: Simple Video Embedder
 Plugin URI: http://www.press75.com/the-simple-video-embedder-wordpress-plugin/
 Description: Easily embed video within your posts. Brought to you by <a href="http://www.press75.com" title="Press75.com">Press75.com</a>.
-Version: 1.2
+Version: 1.3
 Author: James Lao
 Author URI: http://jameslao.com/
 */
@@ -21,7 +21,7 @@ if ( PHP_VERSION_ID < 50000 ) {
 		?>
 			<div id='cafepress-upgrade' class='updated fade'>
 			<p>
-				You are currently running PHP4. You must have PHP5 to use this plugin. Please ask your host how to upgrade to PHP to version 5.
+				You are currently using PHP4. You must be using PHP5 to use the Simple Video Embedder plugin. Ask your host for information on how to switch to PHP5.
 			</p>
 			</div>
 		<?php
@@ -124,8 +124,6 @@ function p75_videoPosting()
 <p style="margin:10px 0 0 0;"><input id="publish" class="button-primary" type="submit" value="<?php _e("Update Post"); ?>" accesskey="p" tabindex="5" name="save"/></p>
 
 <?php
-	if ( $thumbURL )
-		echo '<a href="' . $thumbURL . '" title="Preview Video" target="_blank">Preview Video</a>';
 }
 
 /**
@@ -213,6 +211,22 @@ function p75GetVideo($postID)
 	$videoEmbedder->setHeight($videoHeight);
 
 	return $videoEmbedder->getEmbedCode($videoURL);
+}
+
+/**
+ * Returns true if post has a video.
+ *
+ * @param $postID The post ID
+ * @return True if post has a video, false otherwise
+ */
+function p75HasVideo($postID)
+{
+	return (bool) 
+		(
+			get_post_meta($postID, '_videoembed', true) ||
+			get_post_meta($postID, '_videoembed_manual', true) ||
+			get_post_meta($postID, 'videoembed', true)
+		);
 }
 
 function p75_videoOptionsAdmin()

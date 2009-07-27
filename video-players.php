@@ -111,6 +111,8 @@
 	}
 	
 	function jwPlayer($url, $width, $height) {
+		static $counter = 1;
+		
 		$flashvars = get_option('p75_jw_flashvars');
 		if ( !empty($flashvars) && substr($flashvars, 0, 1)!='&' )
 			$flashvars = '&' . $flashvars;
@@ -119,7 +121,7 @@
 		if ( substr($fileLoc, -1)!='/' )
 			$fileLoc = $fileLoc . '/';
 		
-		return '<div id="videoContainer"><a href="http://www.macromedia.com/go/getflashplayer">Get the Flash Player</a> to see this player.</div>
+		return '<div id="videoContainer-' . $counter . '"><a href="http://www.macromedia.com/go/getflashplayer">Get the Flash Player</a> to see this player.</div>
 	<script type="text/javascript" src="' . $fileLoc . 'swfobject.js"></script>
 	<script type="text/javascript">
 		var s1 = new SWFObject("' . $fileLoc . 'player-viral.swf","ply","'.$width.'","'.$height.'","9","#FFFFFF");
@@ -127,7 +129,7 @@
 		s1.addParam("allownetworking","all");
 		s1.addParam("allowscriptaccess","always");
 		s1.addParam("flashvars","file=' . $url . $flashvars . '");
-		s1.write("videoContainer");
+		s1.write("videoContainer-' . $counter++ . '");
 	</script>';
 	}
 	
