@@ -229,6 +229,50 @@ function p75HasVideo($postID)
 		);
 }
 
+/**
+ * The shortcode for embedding videos in your posts wherever.
+ *
+ * The shortcode accepts four parameters:
+ *  id: some post ID, defaults the current post
+ *  url: a URL to a video, defaults to null
+ *  width: the player width, only works when specifying the URL
+ *  height: the player height, only works when specifying the URL
+ *
+ * If you specify the post ID, it will use the video, width, and height
+ * associated with the post.
+ *
+ * If you specify the video URL, it will use that URL to create the embedded player.
+ * If width and height are specified as well, they will be used, otherwise the
+ * defaults will be used as set in the options page.
+ */
+function p75_video_short_code($atts, $content=null) {
+	global $post;
+	
+	extract(shortcode_atts(array(
+		'id' => $post->ID,
+		'url' => null,
+		'width' => -1,
+		'height' => -1
+	), $atts));
+	
+	// If a URL is passed in, use that.
+	if ( null != $url ) {
+		$width = (-1 != $width) ? $width : get_option('p75_default_player_width');
+		$height = (-1 != $height) ? $height : get_option('p75_default_player_height');
+		
+		$videoEmbedder = p75VideoEmbedder::getInstance();
+		$videoEmbedder->setWidth($width);
+		$videoEmbedder->setHeight($height);
+	
+		return $videoEmbedder->getEmbedCode($url);
+	}
+
+	// No URL was passed in.
+	return p75GetVideo($id);
+}
+
+add_shortcode('simple_video', 'p75_video_short_code');
+
 function p75_videoOptionsAdmin()
 {
 ?>
