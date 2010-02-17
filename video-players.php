@@ -12,7 +12,7 @@
 		// example: http://vimeo.com/127768
 		preg_match("#http://(?:www\.)?vimeo\.com/([0-9]+)#i", $url, $matches);
 		
-		return '<object width="' . $width . '" height="' . $height . '"><param name="allowfullscreen" value="true" /><param name="allowscriptaccess" value="always" /><param name="movie" value="http://vimeo.com/moogaloop.swf?clip_id=' . $matches[1] . '&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=&amp;fullscreen=1" /><embed src="http://vimeo.com/moogaloop.swf?clip_id=' . $matches[1] . '&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=&amp;fullscreen=1" type="application/x-shockwave-flash" allowfullscreen="true" allowscriptaccess="always" width="' . $width . '" height="' . $height . '"></embed></object>';
+		return '<object width="' . $width . '" height="' . $height . '"><param name="allowfullscreen" value="true" /><param name="allowscriptaccess" value="always" /><param name="movie" value="http://vimeo.com/moogaloop.swf?clip_id=' . $matches[1] . '&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=&amp;fullscreen=1" /><embed wmode="transparent" src="http://vimeo.com/moogaloop.swf?clip_id=' . $matches[1] . '&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=&amp;fullscreen=1" type="application/x-shockwave-flash" allowfullscreen="true" allowscriptaccess="always" width="' . $width . '" height="' . $height . '"></embed></object>';
 	}
 
 	function youtubeOracle($url)
@@ -31,7 +31,7 @@
 		{
 			$res = '<object width="' . $width . '" height="' . $height . '"><param value="http://www.youtube.com/v/' . $matches[1] . '&ap=%2526fmt%3D22';
 			if ( strstr($url, "&autoplay=1") ) $res .= '&autoplay=1';
-			$res .= '" name="movie" /><param value="window" name="wmode" /><param value="true" name="allowFullScreen" /><embed width="' . $width . '" height="' . $height . '" wmode="window" allowfullscreen="true" type="application/x-shockwave-flash" src="http://www.youtube.com/v/' . $matches[1] . '&ap=%2526fmt%3D22';
+			$res .= '" name="movie" /><param value="window" name="wmode" /><param value="true" name="allowFullScreen" /><embed wmode="transparent" width="' . $width . '" height="' . $height . '" wmode="window" allowfullscreen="true" type="application/x-shockwave-flash" src="http://www.youtube.com/v/' . $matches[1] . '&ap=%2526fmt%3D22';
 			if ( strstr($url, "&autoplay=1") ) $res .= '&autoplay=1';
 			$res .= '"></embed></object>';
 			return $res;
@@ -40,7 +40,7 @@
 		{
 			$res = '<object width="' . $width . '" height="' . $height . '"><param name="movie" value="http://www.youtube.com/v/' . $matches[1] . '&hl=en&fs=1';
 			if ( strstr($url, "&autoplay=1") ) $res .= '&autoplay=1';
-			$res .= '"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/' . $matches[1] . '&hl=en&fs=1';
+			$res .= '"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed wmode="transparent" src="http://www.youtube.com/v/' . $matches[1] . '&hl=en&fs=1';
 			if ( strstr($url, "&autoplay=1") ) $res .= '&autoplay=1';
 			$res .= '" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="' . $width . '" height="' . $height . '"></embed></object>';
 			return $res;
@@ -59,7 +59,7 @@
 		// example: http://www.metacafe.com/watch/2467303/hair_washing_toffee/
 		preg_match("#http://(?:www\.)?metacafe\.com/watch/([_\-a-z0-9]+)/([_\-a-z0-9]+)#i", $url, $matches);
 		
-		return '<embed src="http://www.metacafe.com/fplayer/' . $matches[1] . '/' . $matches[2] . '.swf" width="' . $width . '" height="' . $height . '" wmode="transparent" allowFullScreen="true" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash"> </embed>';
+		return '<embed wmode="transparent" src="http://www.metacafe.com/fplayer/' . $matches[1] . '/' . $matches[2] . '.swf" width="' . $width . '" height="' . $height . '" allowFullScreen="true" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash"> </embed>';
 	}
 	
 	function revverOracle($url)
@@ -74,7 +74,7 @@
 		// example: http://revver.com/video/1373455/animator-vs-animation-ii-original/
 		preg_match("#http://(?:www\.)?revver\.com/video/([0-9]+)#i", $url, $matches);
 		
-		return '<object width="' . $width . '" height="' . $height . '" data="http://flash.revver.com/player/1.0/player.swf?mediaId=' . $matches[1] . '" type="application/x-shockwave-flash" id="revvervideoa17743d6aebf486ece24053f35e1aa23"><param name="Movie" value="http://flash.revver.com/player/1.0/player.swf?mediaId=' . $matches[1] . '"></param><param name="FlashVars" value="allowFullScreen=true"></param><param name="AllowFullScreen" value="true"></param><param name="AllowScriptAccess" value="always"></param><embed type="application/x-shockwave-flash" src="http://flash.revver.com/player/1.0/player.swf?mediaId=' . $matches[1] . '" pluginspage="http://www.macromedia.com/go/getflashplayer" allowScriptAccess="always" flashvars="allowFullScreen=true" allowfullscreen="true" height="' . $height . '" width="' . $width . '"></embed></object>';
+		return '<object width="' . $width . '" height="' . $height . '" data="http://flash.revver.com/player/1.0/player.swf?mediaId=' . $matches[1] . '" type="application/x-shockwave-flash" id="revvervideoa17743d6aebf486ece24053f35e1aa23"><param name="Movie" value="http://flash.revver.com/player/1.0/player.swf?mediaId=' . $matches[1] . '"></param><param name="FlashVars" value="allowFullScreen=true"></param><param name="AllowFullScreen" value="true"></param><param name="AllowScriptAccess" value="always"></param><embed wmode="transparent" type="application/x-shockwave-flash" src="http://flash.revver.com/player/1.0/player.swf?mediaId=' . $matches[1] . '" pluginspage="http://www.macromedia.com/go/getflashplayer" allowScriptAccess="always" flashvars="allowFullScreen=true" allowfullscreen="true" height="' . $height . '" width="' . $width . '"></embed></object>';
 	}
 	
 	function googleVideoOracle($url)
@@ -88,7 +88,7 @@
 		// example: http://video.google.com/videoplay?docid=-8111235669135653751
 		preg_match("#http://(?:www\.)?video\.google\.com/videoplay\?docid=([\-0-9]+)#i", $url, $matches);
 		
-		return '<embed id="VideoPlayback" src="http://video.google.com/googleplayer.swf?docid=' . $matches[1] . '&hl=en&fs=true" style="width:' . $width . 'px;height:' . $height . 'px" allowFullScreen="true" allowScriptAccess="always" type="application/x-shockwave-flash"></embed>';
+		return '<embed wmode="transparent" id="VideoPlayback" src="http://video.google.com/googleplayer.swf?docid=' . $matches[1] . '&hl=en&fs=true" style="width:' . $width . 'px;height:' . $height . 'px" allowFullScreen="true" allowScriptAccess="always" type="application/x-shockwave-flash"></embed>';
 	}
 	
 	function seesmicOracle($url)
@@ -102,7 +102,7 @@
 		// example: http://seesmic.com/threads/veyy9lwnnm
 		preg_match("#http://(?:www\.)?seesmic\.com/threads/([a-z0-9]+)#i", $url, $matches);
 		
-		return "<object width='" . $width . "' height='" . $height . "'><param name='movie' value='http://seesmic.com/embeds/wrapper.swf'/><param name='bgcolor' value='#666666'/><param name='allowFullScreen' value='true'/><param name='allowScriptAccess' value='always'/><param name='flashVars' value='video=" . $matches[1] . "&amp;version=threadedplayer'/><embed src='http://seesmic.com/embeds/wrapper.swf' type='application/x-shockwave-flash' flashVars='video=" . $matches[1] . "&amp;version=threadedplayer' allowFullScreen='true' bgcolor='#666666' allowScriptAccess='always' width='" . $width . "' height='" . $height . "'></embed></object>";
+		return "<object width='" . $width . "' height='" . $height . "'><param name='movie' value='http://seesmic.com/embeds/wrapper.swf'/><param name='bgcolor' value='#666666'/><param name='allowFullScreen' value='true'/><param name='allowScriptAccess' value='always'/><param name='flashVars' value='video=" . $matches[1] . "&amp;version=threadedplayer'/><embed wmode='transparent' src='http://seesmic.com/embeds/wrapper.swf' type='application/x-shockwave-flash' flashVars='video=" . $matches[1] . "&amp;version=threadedplayer' allowFullScreen='true' bgcolor='#666666' allowScriptAccess='always' width='" . $width . "' height='" . $height . "'></embed></object>";
 	}
 	
 	function jwPlayerOracle($url)
