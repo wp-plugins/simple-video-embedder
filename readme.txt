@@ -4,7 +4,7 @@ Donate link: http://jameslao.com/
 Tags: video, embed, youtube, vimeo, automatic, simple
 Requires at least: 2.6
 Tested up to: 2.8.2
-Stable tag: 1.3
+Stable tag: 1.4
 
 Adds a widget to the posting screen that makes posting videos a cinch.
 
@@ -26,18 +26,27 @@ Sites supported:
 
 The widget also provides a space to add custom embed code for posting videos from unsupported sites.
 
-Version 1.3 adds:
+== Changelog ==
+
+1.4:
+
+*   Fix for transparency issues.
+
+1.3:
+
 *   Admin notice if you are using PHP4.
 *   Updated JW Player code so that the ID on the videoContainer div does not conflict if there are multiple players on the page.
 *   Added a p75HasVideo(post_id) function that checks to see if a given post has a video.
 
-Version 1.2 adds:
+1.2:
+
 *   XMLRPC identification
 
-Version 1.1.1 adds:
+1.1.1:
+
 *   Autoplay support for YouTube.
 
-Version 1.1 adds several new features including:
+1.1:
 
 *   An easy to use API for adding support for new video sharing sites. See `video-embedder.php` for details.
 *   An options page setting many default values including width and height of the player.
