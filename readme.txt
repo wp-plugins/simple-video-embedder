@@ -4,7 +4,7 @@ Donate link: http://jameslao.com/
 Tags: video, embed, youtube, vimeo, automatic, simple
 Requires at least: 2.9
 Tested up to: 3.0
-Stable tag: 2.0
+Stable tag: 2.1
 
 Adds a widget to the posting screen that makes posting videos a cinch.
 
