@@ -3,31 +3,110 @@
 Plugin Name: Simple Video Embedder
 Plugin URI: http://www.press75.com/the-simple-video-embedder-wordpress-plugin/
 Description: Easily embed video within your posts. Brought to you by <a href="http://www.press75.com" title="Press75.com">Press75.com</a>.
-Version: 1.4
+Version: 2.1
 Author: James Lao
 Author URI: http://jameslao.com/
 */
 
-require_once('video-embedder.php');
-require_once('video-players.php');
+/**
+ * Gets the embed code for a video.
+ *
+ * @param $postID The post ID of the video
+ * @return The embed code
+ */
+function p75GetVideo($postID)
+{
+    global $wp_embed;
 
-if(!defined('PHP_VERSION_ID')) {
-	$version = PHP_VERSION;
-	define('PHP_VERSION_ID', ($version{0} * 10000 + $version{2} * 100 + $version{4}));
+	// legacy support...
+	if ( $videoURL = get_post_meta($postID, 'videoembed', true) ) return $videoURL;
+	
+	if ( $videoEmbed = get_post_meta($postID, '_videoembed_manual', true ) ) return $videoEmbed;
+
+	$videoURL = get_post_meta($postID, '_videoembed', true);
+	if ( !($videoWidth = get_post_meta($postID, '_videowidth', true)) )
+		$videoWidth = get_option('p75_default_player_width');
+	if ( !($videoHeight = get_post_meta($postID, '_videoheight', true)) )
+		$videoHeight = get_option('p75_default_player_height');
+
+	return $wp_embed->shortcode( array('width' => $videoWidth, 'height' => $videoHeight), $videoURL );
 }
 
-if ( PHP_VERSION_ID < 50000 ) {
-	function spt_php_version_error() {
-		?>
-			<div id='cafepress-upgrade' class='updated fade'>
-			<p>
-				You are currently using PHP4. You must be using PHP5 to use the Simple Video Embedder plugin. Ask your host for information on how to switch to PHP5.
-			</p>
-			</div>
-		<?php
-	}
-	add_action('admin_notices', 'spt_php_version_error');
+/**
+ * Returns true if post has a video.
+ *
+ * @param $postID The post ID
+ * @return True if post has a video, false otherwise
+ */
+function p75HasVideo($postID)
+{
+	return (bool) 
+		(
+			get_post_meta($postID, '_videoembed', true) ||
+			get_post_meta($postID, '_videoembed_manual', true) ||
+			get_post_meta($postID, 'videoembed', true)
+		);
 }
+
+// Register the custom JW Media Player embed handler.
+
+function p75_jw_player_handler( $matches, $attr, $url, $rawattr )
+{
+    static $counter = 1;
+
+    if ( !empty($rawattr['width']) && !empty($rawattr['height']) ) { 
+        $width  = (int) $rawattr['width'];
+        $height = (int) $rawattr['height'];
+    } else {
+        list( $width, $height ) = wp_expand_dimensions( 
+            get_option('p75_default_player_width'), 
+            get_option('p75_default_player_height'), 
+            $attr['width'], $attr['height'] );
+    }
+
+    $flashvars = get_option('p75_jw_flashvars');
+    if ( !empty($flashvars) && substr($flashvars, 0, 1)!='&' )
+        parse_str( $flashvars, $vars );
+                
+    $file_loc = get_option('p75_jw_files');
+        if ( substr($file_loc, -1)!='/' )
+            $file_loc = $file_loc . '/';
+
+    $res = "
+<script type='text/javascript' src='{$file_loc}swfobject.js'></script>
+<div id='videoContainer-" . $counter . "'>This text will be replaced</div>
+<script type='text/javascript'>
+var so = new SWFObject('{$file_loc}player.swf','ply','" . esc_attr($width) . "','" . esc_attr($height) . "','9','#000000');
+so.addParam('allowfullscreen','true');
+so.addParam('allowscriptaccess','always');
+so.addParam('wmode','opaque');
+so.addVariable('file','" . esc_attr($url) . "');\n";
+    foreach ( $vars as $key => $val )
+        $res .= "so.addVariable('$key','" . rawurlencode($val) . "');\n";
+    $res .= "so.write('videoContainer-" . $counter++ . "');
+</script>\n";
+    return $res;
+}
+
+wp_embed_register_handler( 
+    'p75_jw_player', 
+    '#http://.*\.(flv|mp4)#i', 
+    'p75_jw_player_handler' );
+
+
+// RSS feed filter to include videos
+
+function p75_feed_video_filter($content, $feed) {
+	global $post;
+
+	if ( p75HasVideo($post->ID) )
+		return p75GetVideo($post->ID) . $content;
+
+	return $content;
+}
+
+add_filter('the_content_feed', 'p75_feed_video_filter', 10, 2);
+
 
 /**
  * Plugin activation. Set default player width
@@ -42,10 +121,7 @@ function p75_sveActivate()
 	// Set default player width and height if not present.
 	add_option('p75_default_player_width', '400');
 	add_option('p75_default_player_height', '300');
-	add_option('p75_sve_version', '1.2');
-	
-	// Update legacy meta fields to the new ones.
-	$wpdb->query("UPDATE " . $wpdb->prefix . "postmeta SET meta_key='_videoembed_manual' WHERE meta_key='videoembed'");
+	update_option('p75_sve_version', '2.0');
 }
 
 /**
@@ -72,7 +148,7 @@ function p75_videoAdminInit()
  */
 function p75_videoPosting()
 {
-	global $post_ID;
+	global $post_ID, $wp_embed;
 	$videoURL = get_post_meta($post_ID, '_videoembed', true);
 	$videoHeight = get_post_meta($post_ID, '_videoheight', true);
 	$videoWidth = get_post_meta($post_ID, '_videowidth', true);
@@ -81,7 +157,7 @@ function p75_videoPosting()
 ?>
 
 	<div style="float:left; margin-right: 5px;">
-		<label for="p75-video-url"><?php _e("Video URL"); ?>:</label> <a href="http://www.press75.com/docs/simple-video-embedder/" title="<?php _e("View Supported Formats"); ?>" target="_blank"><?php _e("Supported Formats"); ?></a><br />
+		<label for="p75-video-url"><?php _e("Video URL"); ?>:</label><br />
 		<input style="width: 300px; margin-top:5px;" type="text" id="p75-video-url" name="p75-video-url" value="<?php echo $videoURL; ?>" tabindex='100' />
 	</div>
 	<div style="float:left; margin-right: 5px;">
@@ -107,10 +183,7 @@ function p75_videoPosting()
 	if ( $videoURL )
 	{
 		echo '<div style="margin-top:10px;">' . __("Video Preview") . ': (' . __("Actual Size") . ')<br /><div id="video_preview" style="padding: 3px; border: 1px solid #CCC;float: left; margin-top: 5px;">';
-		$videoEmbedder = p75VideoEmbedder::getInstance();
-		$videoEmbedder->setWidth( $videoWidth ? $videoWidth : get_option('p75_default_player_width') );
-		$videoEmbedder->setHeight( $videoHeight ? $videoHeight : get_option('p75_default_player_height') );
-		echo $videoEmbedder->getEmbedCode($videoURL);
+        echo p75GetVideo($post_ID);
 		echo '</div></div><div class="clear"></div>';
 	}
 	else if ( $videoEmbed )
@@ -188,48 +261,6 @@ function p75_saveVideo( $postID ) {
 }
 
 /**
- * Gets the embed code for a video.
- *
- * @param $postID The post ID of the video
- * @return The embed code
- */
-function p75GetVideo($postID)
-{
-	// legacy support...
-	if ( $videoURL = get_post_meta($postID, 'videoembed', true) ) return $videoURL;
-	
-	if ( $videoEmbed = get_post_meta($postID, '_videoembed_manual', true ) ) return $videoEmbed;
-
-	$videoURL = get_post_meta($postID, '_videoembed', true);
-	if ( !($videoWidth = get_post_meta($postID, '_videowidth', true)) )
-		$videoWidth = get_option('p75_default_player_width');
-	if ( !($videoHeight = get_post_meta($postID, '_videoheight', true)) )
-		$videoHeight = get_option('p75_default_player_height');
-
-	$videoEmbedder = p75VideoEmbedder::getInstance();
-	$videoEmbedder->setWidth($videoWidth);
-	$videoEmbedder->setHeight($videoHeight);
-
-	return $videoEmbedder->getEmbedCode($videoURL);
-}
-
-/**
- * Returns true if post has a video.
- *
- * @param $postID The post ID
- * @return True if post has a video, false otherwise
- */
-function p75HasVideo($postID)
-{
-	return (bool) 
-		(
-			get_post_meta($postID, '_videoembed', true) ||
-			get_post_meta($postID, '_videoembed_manual', true) ||
-			get_post_meta($postID, 'videoembed', true)
-		);
-}
-
-/**
  * The shortcode for embedding videos in your posts wherever.
  *
  * The shortcode accepts four parameters:
@@ -246,7 +277,7 @@ function p75HasVideo($postID)
  * defaults will be used as set in the options page.
  */
 function p75_video_short_code($atts, $content=null) {
-	global $post;
+	global $post, $wp_embed;
 	
 	extract(shortcode_atts(array(
 		'id' => $post->ID,
@@ -259,12 +290,8 @@ function p75_video_short_code($atts, $content=null) {
 	if ( null != $url ) {
 		$width = (-1 != $width) ? $width : get_option('p75_default_player_width');
 		$height = (-1 != $height) ? $height : get_option('p75_default_player_height');
-		
-		$videoEmbedder = p75VideoEmbedder::getInstance();
-		$videoEmbedder->setWidth($width);
-		$videoEmbedder->setHeight($height);
 	
-		return $videoEmbedder->getEmbedCode($url);
+        return $wp_embed->shortcode( array('width' => $width, 'height' => $height), $url );
 	}
 
 	// No URL was passed in.
@@ -316,6 +343,7 @@ function p75_videoOptionsAdmin()
 
 <?php
 }
+
 
 function ident_simple_video_plugin($blogopts) {
   $blogopts['simple_video_embedder'] =  array(
