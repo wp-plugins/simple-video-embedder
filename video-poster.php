@@ -3,7 +3,7 @@
 Plugin Name: Simple Video Embedder
 Plugin URI: http://www.press75.com/the-simple-video-embedder-wordpress-plugin/
 Description: Easily embed video within your posts. Brought to you by <a href="http://www.press75.com" title="Press75.com">Press75.com</a>.
-Version: 2.0
+Version: 2.1
 Author: James Lao
 Author URI: http://jameslao.com/
 */
@@ -66,13 +66,13 @@ function p75_jw_player_handler( $matches, $attr, $url, $rawattr )
 
     $flashvars = get_option('p75_jw_flashvars');
     if ( !empty($flashvars) && substr($flashvars, 0, 1)!='&' )
-        $flashvars = '&' . $flashvars;
+        parse_str( $flashvars, $vars );
                 
     $file_loc = get_option('p75_jw_files');
         if ( substr($file_loc, -1)!='/' )
             $file_loc = $file_loc . '/';
 
-    return "
+    $res = "
 <script type='text/javascript' src='{$file_loc}swfobject.js'></script>
 <div id='videoContainer-" . $counter . "'>This text will be replaced</div>
 <script type='text/javascript'>
@@ -80,9 +80,12 @@ var so = new SWFObject('{$file_loc}player.swf','ply','" . esc_attr($width) . "',
 so.addParam('allowfullscreen','true');
 so.addParam('allowscriptaccess','always');
 so.addParam('wmode','opaque');
-so.addVariable('file','" . esc_attr($url) . "');
-so.write('videoContainer-" . $counter++ . "');
-</script>";
+so.addVariable('file','" . esc_attr($url) . "');\n";
+    foreach ( $vars as $key => $val )
+        $res .= "so.addVariable('$key','" . rawurlencode($val) . "');\n";
+    $res .= "so.write('videoContainer-" . $counter++ . "');
+</script>\n";
+    return $res;
 }
 
 wp_embed_register_handler( 

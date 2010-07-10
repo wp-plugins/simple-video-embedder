@@ -23,6 +23,10 @@ Easily embed video within your posts. Adds a widget to the posting screen that e
 
 == Changelog ==
 
+2.1:
+
+*   Fixed flashvars for JW media player.
+
 2.0:
 
 *   Changed to use WordPress's built in [oEmbed API](http://codex.wordpress.org/Embeds) to generate embed codes.
