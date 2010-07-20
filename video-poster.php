@@ -3,7 +3,7 @@
 Plugin Name: Simple Video Embedder
 Plugin URI: http://www.press75.com/the-simple-video-embedder-wordpress-plugin/
 Description: Easily embed video within your posts. Brought to you by <a href="http://www.press75.com" title="Press75.com">Press75.com</a>.
-Version: 2.1
+Version: 2.2
 Author: James Lao
 Author URI: http://jameslao.com/
 */
@@ -81,8 +81,11 @@ so.addParam('allowfullscreen','true');
 so.addParam('allowscriptaccess','always');
 so.addParam('wmode','opaque');
 so.addVariable('file','" . esc_attr($url) . "');\n";
-    foreach ( $vars as $key => $val )
-        $res .= "so.addVariable('$key','" . rawurlencode($val) . "');\n";
+    if ( $vars )
+    {
+        foreach ( $vars as $key => $val )
+            $res .= "so.addVariable('$key','" . rawurlencode($val) . "');\n";
+    }
     $res .= "so.write('videoContainer-" . $counter++ . "');
 </script>\n";
     return $res;

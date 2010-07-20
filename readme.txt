@@ -4,7 +4,7 @@ Donate link: http://jameslao.com/
 Tags: video, embed, youtube, vimeo, automatic, simple
 Requires at least: 2.9
 Tested up to: 3.0
-Stable tag: 2.1
+Stable tag: 2.2
 
 Adds a widget to the posting screen that makes posting videos a cinch.
 
@@ -22,6 +22,10 @@ Easily embed video within your posts. Adds a widget to the posting screen that e
 6. Once the page reloads, a full preview of your embedded video should be displayed.
 
 == Changelog ==
+
+2.2:
+
+*   Fixed PHP error when flashvars for JW media player are not set.
 
 2.1:
 
